@@ -16,9 +16,9 @@ type Client struct {
 	rl   *rate.Limiter
 }
 
-func NewClient() *Client {
+func NewClient(rps int64) *Client {
 	return &Client{
-		rl: rate.NewLimiter(rate.Every(time.Second), 1),
+		rl: rate.NewLimiter(rate.Every(time.Second/time.Duration(rps)), 1),
 		http: &http.Client{
 			Timeout: 30 * time.Second,
 		},
