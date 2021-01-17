@@ -37,7 +37,7 @@ func (s *Sender) SendMessage(message string) error {
 
 func (s *Sender) SendLocation(latitude, longitude string) error {
 	resp, err := s.client.Get(
-		fmt.Sprintf("https://api.telegram.org/bot%s/sendLocation?chat_id=%s&latitude=%s&longitude=%s", s.token, s.chatID, latitude, longitude),
+		fmt.Sprintf("https://api.telegram.org/bot%s/sendLocation?chat_id=%s&latitude=%s&longitude=%s&disable_notification=true", s.token, s.chatID, latitude, longitude),
 	)
 	if err != nil {
 		return fmt.Errorf("error sending telegram location: %w", err)
