@@ -156,9 +156,11 @@ func send(sender *telegram.Sender, specialty *gorzdrav.Specialty) error {
 	message := fmt.Sprintf(
 		messageFMT,
 		specialty.LPU.District.Name,
+		fmt.Sprintf("%s_%d_%s", specialty.LPU.District.ID, specialty.LPU.ID, specialty.ID),
 		specialty.LPU.LpuShortName,
 		specialty.LPU.Address,
 		specialty.LPU.Phone,
+		specialty.LPU.Email,
 		specialty.Name,
 		"https://gorzdrav.spb.ru/service-covid-vaccination-schedule#%5B%7B%22district%22:%22"+specialty.LPU.District.ID+"%22%7D,%7B%22lpu%22:%22"+strconv.Itoa(specialty.LPU.ID)+"%22%7D,%7B%22speciality%22:%22"+specialty.ID+"%22%7D%5D",
 		specialty.CountFreeTicket,
@@ -274,10 +276,12 @@ func (v sentValue) Marshal() []byte {
 }
 
 const messageFMT = `#%s
+🔎 #%s
 
 🏥 %s
 🗺 %s
 ☎️ %s
+📧 %s
 
 [Записаться %s](%s)
 Всего *%d* 🎫
