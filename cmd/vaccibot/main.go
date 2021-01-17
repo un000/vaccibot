@@ -156,7 +156,7 @@ func send(sender *telegram.Sender, specialty *gorzdrav.Specialty) error {
 	message := fmt.Sprintf(
 		messageFMT,
 		specialty.LPU.District.Name,
-		fmt.Sprintf("%s%d%s", specialty.LPU.District.ID, specialty.LPU.ID, specialty.ID),
+		fmt.Sprintf("pk%s%d%s", specialty.LPU.District.ID, specialty.LPU.ID, specialty.ID),
 		specialty.LPU.LpuShortName,
 		specialty.LPU.Address,
 		specialty.LPU.Phone,
