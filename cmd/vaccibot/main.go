@@ -204,10 +204,14 @@ func needToSend(db *nutsdb.DB, specialty *gorzdrav.Specialty) (bool, error) {
 	if err != nil {
 		return false, fmt.Errorf("error parsing last send %s: %w", oldValue.LastSend, err)
 	}
-	if time.Now().UTC().After(lastSend.Add(*flagSendEvery)) {
-		if oldValue.CountFreeTicket != specialty.CountFreeTicket ||
-			oldValue.CountFreeParticipant != specialty.CountFreeParticipant {
-			return true, nil
+	now := time.Now().UTC()
+	if now.After(lastSend.Add(*flagSendEvery)) {
+		if specialty.CountFreeParticipant != oldValue.CountFreeParticipant {
+			if specialty.CountFreeParticipant == 0 &&
+				specialty.CountFreeParticipant > oldValue.CountFreeParticipant ||
+				now.After(lastSend.Add(*flagSendEvery*3)) {
+				return true, nil
+			}
 		}
 	}
 

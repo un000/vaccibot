@@ -24,8 +24,14 @@ func NewSender(token, chatID string) *Sender {
 }
 
 func (s *Sender) SendMessage(message string) error {
+	silent := false
+	hour := time.Now().UTC().Add(3 * time.Hour).Hour()
+	if hour == 22 || (hour >= 0 && hour < 9) {
+		silent = true
+	}
+
 	resp, err := s.client.Get(
-		fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s&parse_mode=markdown", s.token, s.chatID, url.QueryEscape(message)),
+		fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s&parse_mode=markdown&disable_notification=%v", s.token, s.chatID, url.QueryEscape(message), silent),
 	)
 	if err != nil {
 		return fmt.Errorf("error sending telegram message: %w", err)
