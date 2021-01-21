@@ -21,12 +21,13 @@ import (
 )
 
 var (
-	flagToken      = flag.String("token", "", "telegram token")
-	flagChatID     = flag.String("chat", "", "bot chat id(with -100 before chatID)")
-	flagDB         = flag.String("db", "/tmp/nutsdb", "db files path")
-	flagCheckEvery = flag.Duration("check_every", 10*time.Minute, "check interval")
-	flagSendEvery  = flag.Duration("send_every", 30*time.Minute, "send diffs interval")
-	flagRPS        = flag.Int64("rps", 2, "rate limit")
+	flagToken          = flag.String("token", "", "telegram token")
+	flagChatID         = flag.String("chat", "", "bot chat id(with -100 before chatID)")
+	flagDB             = flag.String("db", "/tmp/nutsdb", "db files path")
+	flagCheckEvery     = flag.Duration("check_every", 10*time.Minute, "check interval")
+	flagSendEvery      = flag.Duration("send_every", 30*time.Minute, "send diffs interval")
+	flagRPS            = flag.Int64("rps", 2, "rate limit")
+	flagHospitalFilter = flag.String("filter", ".*", "regexp to filter hospital")
 )
 
 const (
@@ -39,6 +40,8 @@ func main() {
 	if *flagToken == "" || *flagChatID == "" {
 		log.Fatal("-token or chat are empty")
 	}
+	hospitalRegexp := regexp.MustCompile(*flagHospitalFilter)
+
 	ctx := notifyExit(context.Background())
 
 	opt := nutsdb.DefaultOptions
@@ -106,8 +109,7 @@ func main() {
 	})
 	wg.Add(func() {
 		for lpu := range lpus {
-			if lpu.ID == 182 || lpu.ID == 319 {
-				log.Printf("WARN skipping bad LPU %s", lpu.LpuShortName)
+			if !hospitalRegexp.MatchString(lpu.LpuShortName) {
 				continue
 			}
 

@@ -13,6 +13,8 @@ Usage of ./vaccibot:
         check interval (default 10m0s)
   -db string
         db files path (default "/tmp/nutsdb")
+  -filter string
+        regexp to filter hospital (default ".*")
   -rps int
         rate limit (default 2)
   -send_every duration
